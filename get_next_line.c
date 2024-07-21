@@ -3,69 +3,61 @@
 /*                                                        :::      ::::::::   */
 /*   get_next_line.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: rlendine <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/05/16 04:30:42 by marvin            #+#    #+#             */
-/*   Updated: 2024/05/29 15:37:47 by rodrigo          ###   ########.fr       */
+/*   Created: 2024/06/24 22:25:01 by rlendine          #+#    #+#             */
+/*   Updated: 2024/07/21 17:02:09 by rlendine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-#include "get_next_line.h"
+#include <unistd.h>
+#include <stdio.h>
+#include <fcntl.h>
+#include <stdlib.h>
 
 char	*get_next_line(int fd)
 {
-	size_t	bytes;
-	char	*buf;
-	char	c;
+	int		byte;
 	int		index;
+	char	buffer;
+	char	*content;
 
 	index = 0;
-	if (fd == -1)
+	content = (char *)malloc(10000);
+	byte = read(fd, &buffer, 1);
+	while (byte > 0)
 	{
-		printf("Error al abrir el archivo.\n");
+		content[index] = buffer;
+		index++;
+		if (buffer == '\n' || byte == 0)
+			break ;
+		byte = read(fd, &buffer, 1);
+	}
+	if (index == 0 || byte <= 0)
+	{
+		free(content);
 		return (NULL);
 	}
-	else
-	{
-		buf = (char *)malloc(10000000);
-		if (!buf)
-			return (NULL);
-		bytes = read(fd, &c, 1); // each every one character from txt file
-		while (bytes > 0)
-		{
-			buf[index] = c;
-			index++;
-			if (c == '\n' || c == EOF)
-				break ;
-			bytes = read(fd, &c, 1);
-		}
-		// Not getting more chars or errors
-		if (index == 0 || bytes < 0)
-		{
-			free(buf);
-			return (NULL);
-		}
-		buf[index] = '\0';
-		return (buf);
-	}
+	content[index] = '\0';
+	return (content);
 }
 
 int	main(void)
 {
-	int	fd;
-	char *str;
-	char *path;
-	int	cont;
+	int		fd;
+	int		line_cont;
+	char	*str;
+	char	*path;
 
-	path = "C:/Users/Rodrigo/OneDrive - brnomrs/Trabajos/CURSOS/gnlgithub/miFichero.txt";
+	line_cont = 0;
+	path = "/home/rlendine/42/gnlRodrigo/miFichero";
 	fd = open(path, O_RDONLY);
-	cont = 0;
-	while (cont < 6)
+	while (line_cont++ < 10)
 	{
 		str = get_next_line(fd);
-		printf("cont: %i\n", cont);
-		printf("fd: %i, %s\n", fd, str);
-		//printf("%s\n", get_next_line(fd));
-		cont++;
+		printf("Linea: %i\n", line_cont);
+		printf("fd: %i, contenido: %s\n", fd, str);
 	}
+	if (str != NULL)
+		printf("%s\n", str);
 	return (0);
 }
