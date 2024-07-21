@@ -2,7 +2,7 @@
 
 # 1 OPEN 
 ### ```int open(const char *camino, int flags);```
-### ```int open(const char *camino, int flags, mode_t modo) (Opcional modo);```
+### ```int open(const char *camino, int flags, mode_t modo) (Opcional);```
 
 ### **INPUT (parámetros):**
 const char **camino = Puntero a la ruta de fichero que queremos abrir<br>
