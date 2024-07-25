@@ -6,7 +6,7 @@
 /*   By: rlendine <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/24 22:25:01 by rlendine          #+#    #+#             */
-/*   Updated: 2024/07/21 17:02:09 by rlendine         ###   ########.fr       */
+/*   Updated: 2024/07/25 04:16:29 by rodrigo          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include <unistd.h>
@@ -32,12 +32,13 @@ char	*get_next_line(int fd)
 			break ;
 		byte = read(fd, &buffer, 1);
 	}
+	if (byte == 0)
+		content[index] = '\0';
 	if (index == 0 || byte <= 0)
 	{
 		free(content);
 		return (NULL);
 	}
-	content[index] = '\0';
 	return (content);
 }
 
@@ -49,7 +50,7 @@ int	main(void)
 	char	*path;
 
 	line_cont = 0;
-	path = "/home/rlendine/42/gnlRodrigo/miFichero";
+	path = "/home/rodrigo/Proyectos42/gnlgithub/miFichero";
 	fd = open(path, O_RDONLY);
 	while (line_cont++ < 10)
 	{
